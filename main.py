@@ -29,21 +29,20 @@ class HairColor(Enum):
     red = "red"
 
 
-class Person(BaseModel):
+class PersonBase(BaseModel):
     first_name: str = Field(..., min_length=1, max_length=50)
     last_name: str = Field(..., min_length=1, max_length=50)
-    age: int = Field(..., gt=0, lt=90)
+    age: int = Field(..., gt=0, lt=90, example=18)
     hair_color: Optional[HairColor] = Field(default=None)
     is_married: Optional[bool] = Field(default=None)
-    password: str = Field(..., min_length=8)
 
 
-class PersonOut(BaseModel):
-    first_name: str = Field(..., min_length=1, max_length=50)
-    last_name: str = Field(..., min_length=1, max_length=50)
-    age: int = Field(..., gt=0, lt=90)
-    hair_color: Optional[HairColor] = Field(default=None)
-    is_married: Optional[bool] = Field(default=None)
+class PersonOut(PersonBase):
+    pass
+
+
+class Person(PersonBase):
+    password: str = Field(..., min_length=8, example="holapassword")
 
 
 @app.get("/")
