@@ -8,6 +8,7 @@ from pydantic import Field
 
 # Fast API
 from fastapi import FastAPI
+from fastapi import status
 from fastapi import Body, Query, Path
 import uvicorn
 
@@ -45,18 +46,22 @@ class Person(PersonBase):
     password: str = Field(..., min_length=8, example="holapassword")
 
 
-@app.get("/")
+@app.get(path="/",
+         status_code=status.HTTP_200_OK)
 def home():
     return {"Hello": "world"}
 
 
-@app.post("/person/new", response_model=PersonOut)
+@app.post(path="/person/new",
+          response_model=PersonOut,
+          status_code=status.HTTP_201_CREATED)
 def create_person(person: Person = Body(...)):
     return person
 
 
 # Validations: Query parameters
-@app.get("/person/detail")
+@app.get(path="/person/detail",
+         status_code=status.HTTP_200_OK)
 def show_person(
         name: str = Query(None,
                           min_length=1,
@@ -89,7 +94,8 @@ def show_person(
 
 # Validaciones: Request Body
 
-@app.put("/person/{person_id}")
+@app.put(path="/person/{person_id}",
+         status_code=status.HTTP_202_ACCEPTED)
 def update_person(
         person_id: int = Path(
             ...,
